@@ -1,1 +1,2 @@
-# Discord-Bot-v1 
+# Discord Bot v1
+This is my cool bot!
