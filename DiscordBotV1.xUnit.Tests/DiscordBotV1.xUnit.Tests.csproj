@@ -5,11 +5,13 @@
     <DebugType>full</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="xunit" Version="*"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="*"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="*"/>
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\DiscordBotV1\DiscordBotV1.csproj"/>
   </ItemGroup>
