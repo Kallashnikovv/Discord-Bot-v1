@@ -5,11 +5,12 @@
     <DebugType>full</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="xunit" Version="*"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="*"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="*"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="*"/>
   </ItemGroup>
 
   <ItemGroup>
