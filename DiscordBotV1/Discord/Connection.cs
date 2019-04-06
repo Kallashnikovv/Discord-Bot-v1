@@ -1,4 +1,6 @@
 ﻿using DiscordBotV1.Discord.Entities;
+using DiscordBotV1.Discord.Handlers;
+using DiscordBotV1.Discord;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
@@ -7,8 +9,9 @@ namespace DiscordBotV1.Discord
 {
 	public class Connection
 	{
-		private readonly DiscordSocketClient _client;
+		public DiscordSocketClient _client;
 		private readonly DiscordLogger _logger;
+		private CommandHandler _handler;
 
 		public Connection(DiscordLogger logger, DiscordSocketClient client)
 		{
@@ -22,6 +25,11 @@ namespace DiscordBotV1.Discord
 
 			await _client.LoginAsync(TokenType.Bot, config.Token);
 			await _client.StartAsync();
+			await _client.SetGameAsync("Choroszcz", null, ActivityType.Playing);
+			await _client.SetStatusAsync(UserStatus.DoNotDisturb);
+						
+			_handler = new CommandHandler();
+			await _handler.InitializeAsync(_client);
 
 			await Task.Delay(-1);
 		}

@@ -2,6 +2,7 @@
 using DiscordBotV1.Storage;
 using DiscordBotV1.Discord;
 using DiscordBotV1.Discord.Entities;
+using DiscordBotV1.Discord.Handlers;
 using System.Threading.Tasks;
 
 namespace DiscordBotV1
@@ -11,7 +12,7 @@ namespace DiscordBotV1
 		private static async Task Main()
 		{
 			Unity.RegisterTypes();
-			Console.WriteLine("Hello, Discord!");
+			Console.WriteLine("Hello, Discord!");		
 
 			var storage = Unity.Resolve<IDataStorage>();
 
