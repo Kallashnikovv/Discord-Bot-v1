@@ -19,7 +19,7 @@ namespace DiscordBotV1
 			var connection = Unity.Resolve<Connection>();
 			await connection.ConnectAsync(new BotConfig
 			{
-				Token = storage.RestoreObject<string>("Config/BotToken")
+				Token = storage.RestoreObject<string>("Config/BotToken"),
 			});
 		}
 	}

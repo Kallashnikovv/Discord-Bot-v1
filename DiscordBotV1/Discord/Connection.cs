@@ -16,7 +16,7 @@ namespace DiscordBotV1.Discord
 		public Connection(DiscordLogger logger, DiscordSocketClient client)
 		{
 			_logger = logger;
-			_client = client;
+			_client = client; 
 		}
 
 		internal async Task ConnectAsync(BotConfig config)
