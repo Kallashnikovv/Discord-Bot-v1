@@ -14,9 +14,9 @@ namespace DiscordBotV1
 			Unity.RegisterTypes();
 			Console.WriteLine("Hello, Discord!");		
 
-			var storage = Unity.Resolve<IDataStorage>();
+			var storage = Unity.Resolve<IDataStorage>(null, new {val=1});
 
-			var connection = Unity.Resolve<Connection>();
+			var connection = Unity.Resolve<Connection>(null, new {val=1});
 			await connection.ConnectAsync(new BotConfig
 			{
 				Token = storage.RestoreObject<string>("Config/BotToken"),

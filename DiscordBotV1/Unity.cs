@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using DiscordBotV1.Discord;
 using DiscordBotV1.Storage;
 using DiscordBotV1.Storage.Implementations;
+using System.Reflection;
+using System.Linq;
 
 namespace DiscordBotV1
 {
@@ -33,9 +35,16 @@ namespace DiscordBotV1
 			_container.RegisterSingleton<Discord.Connection>();
 		}
 
-		public static T Resolve<T>()
+		public static T Resolve<T>(this IUnityContainer container, object ParameterOverrides)
 		{
-			return (T)Container.Resolve(typeof(T));
+			var properties = ParameterOverrides
+				.GetType()
+				.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var overridesArray = properties
+				.Select(p => new ParameterOverride(p.Name, p.GetValue(ParameterOverrides, null)))
+				.Cast<ResolverOverride>()
+				.ToArray();
+			return Container.Resolve<T>(null, overridesArray);
 		}
 	}
 }
