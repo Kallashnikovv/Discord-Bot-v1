@@ -1,21 +1,20 @@
 using System;
-using System.Threading.Tasks;
+using System.Text;
 using System.Reflection;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBotV1.Discord.Entities;
-using DiscordBotV1.Storage;
-using Discord;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace DiscordBotV1.Discord.Handlers
 {
-    public class CommandHandler
+    public class CommandHandler : ModuleBase<SocketCommandContext>
     {
         private DiscordSocketClient _client;
         private CommandService _commandService;
-        private ILogger _logger;
-        
+        internal StringBuilder LogMessage = new StringBuilder();
+
         public async Task InitializeAsync(DiscordSocketClient client)
         {
             _client = client;
@@ -29,9 +28,22 @@ namespace DiscordBotV1.Discord.Handlers
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
             var channel = guild.GetTextChannel(564491145325969428); // channel id
-            await channel.SendMessageAsync(msg.Message); // use msg to get the message
+            var embed = new EmbedBuilder();
+            embed.WithColor(255, 235, 25);
+
+            LogMessage.Append(msg.Message);
+            LogMessage.Append("\n");
+
+            await Task.Delay(3000);
+            if (LogMessage.Length >= 25)
+            {
+                embed.WithDescription(LogMessage.ToString());
+                await channel.SendMessageAsync("", false, embed.Build()); // use msg to get the message
+                LogMessage.Clear();
+            }
+            await Task.Delay(3000);
         }
-        
+
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
@@ -54,6 +66,13 @@ namespace DiscordBotV1.Discord.Handlers
                         Console.WriteLine(result.ErrorReason);
                     }
                 }
+        }
+
+        [Command("playing")]
+        [RequireOwner]
+        public async Task SetGame(ActivityType activityType, [Remainder]string game)
+        {
+            await _client.SetGameAsync(game, null, activityType);
         }
     }
 }
