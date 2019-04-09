@@ -11,8 +11,8 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.0.1"/>
-    <PackageReference Include="Unity" Version="5.10.2"/>
-    <PackageReference Include="Victoria" Version="*"/>
+    <PackageReference Include="Discord.Net" Version="2.0.1" />
+    <PackageReference Include="Unity" Version="5.10.2" />
+    <PackageReference Include="Victoria" Version="*" />
   </ItemGroup>
 </Project>

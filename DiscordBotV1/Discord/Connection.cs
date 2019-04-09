@@ -1,6 +1,5 @@
 ﻿using DiscordBotV1.Discord.Entities;
 using DiscordBotV1.Discord.Handlers;
-using DiscordBotV1.Discord;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
