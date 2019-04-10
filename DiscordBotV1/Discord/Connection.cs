@@ -14,9 +14,15 @@ namespace DiscordBotV1.Discord
 
 		public Connection(DiscordLogger logger, DiscordSocketClient client)
 		{
-			_logger = logger;
+            var config = new DiscordSocketConfig
+            {
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 100
+            };
+            client = new DiscordSocketClient(config);
+            _logger = logger;
             _client = client;
-		}
+        }
 
 		internal async Task ConnectAsync(BotConfig config)
 		{

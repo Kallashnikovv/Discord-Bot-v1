@@ -16,15 +16,10 @@ namespace DiscordBotV1.Discord.Handlers
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
-            _client = client ?? new DiscordSocketClient(new DiscordSocketConfig
-            {
-                AlwaysDownloadUsers = true,
-                MessageCacheSize = 100
-            });
+            _client = client;
             _commandService = new CommandService();
             await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
             _client.MessageReceived += HandleCommandAsync;
-            //_client.Log += Client_Log;
             _client.MessageReceived += ClientCom_Log;
             _client.MessageDeleted += MsgDelClient_Log;
             //_client.MessageUpdated += MsgEdtClient_Log;
@@ -64,14 +59,14 @@ namespace DiscordBotV1.Discord.Handlers
             var embed = new EmbedBuilder();
             embed.WithColor(255, 235, 25);
 
-            if (!msg.Author.IsBot && msg.Content.Contains('!'))
+            if (!msg.Author.IsBot)
             {
-            embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
-            embed.WithTimestamp(msg.CreatedAt);
-            embed.WithFooter("ID:" + msg.Id);
-            embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
-            embed.WithDescription(msg.Content.ToString());
-            await channel.SendMessageAsync("", false, embed.Build());
+                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
+                embed.WithTimestamp(msg.CreatedAt);
+                embed.WithFooter("ID:" + msg.Id);
+                embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
+                embed.WithDescription(msg.Content);
+                await channel.SendMessageAsync("", false, embed.Build());
             }
         }
 
@@ -84,37 +79,42 @@ namespace DiscordBotV1.Discord.Handlers
 
             Console.WriteLine(cachedMessage.Value.Content);
 
-            if (cachedMessage.Value is null) { Console.WriteLine("Error `cachedMessage.Value` is null!"); return; }
+            if (cachedMessage.Value is null) return;
 
-            var msg = cachedMessage.Value;
+            var msg = cachedMessage.Value as SocketUserMessage;
 
-            embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
-            embed.WithFooter("ID: " + msg.Id);
-            embed.WithTimestamp(msg.CreatedAt);
-            embed.AddField("User Id: " + msg.Author.Id.ToString(), "\u200b");
-            embed.WithDescription(msg.Content);
-            await channel.SendMessageAsync("", false, embed.Build());
+            if (!msg.Author.IsBot)
+            {
+                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
+                embed.WithFooter("ID: " + msg.Id);
+                embed.WithTimestamp(msg.CreatedAt);
+                embed.AddField("User Id: " + msg.Author.Id.ToString(), "\u200b");
+                embed.WithDescription(msg.Content);
+                await channel.SendMessageAsync("", false, embed.Build());
+            }
         }
 
-
-        /*private async Task Client_Log(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel chnl)
+        /*private async Task MsgEdtClient_Log(Cacheable<IMessage, ulong> cachedMessage, SocketMessage socketMessage, ISocketMessageChannel chnl)
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
-            var channel = guild.GetTextChannel(564491145325969428); // channel id
+            var channel = guild.GetTextChannel(565255635227246609); // channel id
             var embed = new EmbedBuilder();
-            embed.WithColor(255, 235, 25);
+            embed.WithColor(221, 95, 83);
 
-            LogMessage.Append(msg.Message);
-            LogMessage.Append("\n");
+            Console.WriteLine(cachedMessage.Value.Content);
 
-            await Task.Delay(3000);
-            if (LogMessage.Length >= 25)
+            if (cachedMessage.Value is null) return;
+
+            var msg = cachedMessage.Value;
+            if (!msg.Author.IsBot)
             {
-                embed.WithDescription(LogMessage.ToString());
+                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
+                embed.WithFooter("ID: " + msg.Id);
+                embed.WithTimestamp(msg.CreatedAt);
+                embed.AddField("User Id: " + msg.Author.Id.ToString(), "\u200b");
+                embed.WithDescription(msg.Content);
                 await channel.SendMessageAsync("", false, embed.Build());
-                LogMessage.Clear();
             }
-            await Task.Delay(3000);
         }*/
         #endregion
     }
