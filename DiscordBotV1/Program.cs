@@ -3,6 +3,8 @@ using DiscordBotV1.Storage;
 using DiscordBotV1.Discord;
 using DiscordBotV1.Discord.Entities;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace DiscordBotV1
 {
@@ -13,13 +15,13 @@ namespace DiscordBotV1
 			Unity.RegisterTypes();
 			Console.WriteLine("Hello, Discord!");
 
-			var storage = Unity.Resolve<IDataStorage>(null, new {val=1});
+			var storage = Unity.Resolve<IDataStorage>(null, new {val=4});
 
 			var connection = Unity.Resolve<Connection>(null, new {val=1});
-			await connection.ConnectAsync(new BotConfig
-			{
-				Token = storage.RestoreObject<string>("Config/BotToken"),
-			});
+
+            var botConfig = storage.RestoreObject<BotConfig>("Config/Config");
+
+            await connection.ConnectAsync(botConfig);
 		}
 	}
 }
