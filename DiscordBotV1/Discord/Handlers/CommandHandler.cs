@@ -8,7 +8,7 @@ using Discord.WebSocket;
 
 namespace DiscordBotV1.Discord.Handlers
 {
-    public class CommandHandler : ModuleBase<SocketCommandContext>
+    public class CommandHandler
     {
         private DiscordSocketClient _client;
         private CommandService _commandService;
@@ -30,6 +30,33 @@ namespace DiscordBotV1.Discord.Handlers
             //_client.MessageUpdated += MsgEdtClient_Log;
         }
 
+
+        private async Task HandleCommandAsync(SocketMessage s)
+        {
+            var msg = s as SocketUserMessage;
+            if (msg == null) return;
+            var context = new SocketCommandContext(_client, msg);
+            int argPos = 0;
+            if (msg.HasStringPrefix("!", ref argPos)
+                || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
+                var result = await _commandService.ExecuteAsync(context, argPos, null);
+                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                {
+                    Console.WriteLine(result.ErrorReason);
+                }
+            }
+            else if (msg.Content == "chlebek" || msg.Content == "kebab" || msg.Content == "test")
+            {
+                var result = await _commandService.ExecuteAsync(context, argPos, null);
+                if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                {
+                    Console.WriteLine(result.ErrorReason);
+                }
+            }
+        }
+
+        #region Logging stuff
         private async Task ClientCom_Log(SocketMessage msg)
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
@@ -37,14 +64,14 @@ namespace DiscordBotV1.Discord.Handlers
             var embed = new EmbedBuilder();
             embed.WithColor(255, 235, 25);
 
-            if (!msg.Author.IsBot)
+            if (!msg.Author.IsBot && msg.Content.Contains('!'))
             {
-                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
-                embed.WithTimestamp(msg.CreatedAt);
-                embed.WithFooter("ID:" + msg.Id);
-                embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
-                embed.WithDescription(msg.ToString());
-                await channel.SendMessageAsync("", false, embed.Build());
+            embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
+            embed.WithTimestamp(msg.CreatedAt);
+            embed.WithFooter("ID:" + msg.Id);
+            embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
+            embed.WithDescription(msg.Content.ToString());
+            await channel.SendMessageAsync("", false, embed.Build());
             }
         }
 
@@ -55,15 +82,17 @@ namespace DiscordBotV1.Discord.Handlers
             var embed = new EmbedBuilder();
             embed.WithColor(221, 95, 83);
 
-            if (cachedMessage.Value is null) return;
+            Console.WriteLine(cachedMessage.Value.Content);
+
+            if (cachedMessage.Value is null) { Console.WriteLine("Error `cachedMessage.Value` is null!"); return; }
 
             var msg = cachedMessage.Value;
 
             embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
             embed.WithFooter("ID: " + msg.Id);
             embed.WithTimestamp(msg.CreatedAt);
-            embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
-            embed.WithDescription(msg.ToString());
+            embed.AddField("User Id: " + msg.Author.Id.ToString(), "\u200b");
+            embed.WithDescription(msg.Content);
             await channel.SendMessageAsync("", false, embed.Build());
         }
 
@@ -87,36 +116,6 @@ namespace DiscordBotV1.Discord.Handlers
             }
             await Task.Delay(3000);
         }*/
-
-        private async Task HandleCommandAsync(SocketMessage s)
-        {
-            var msg = s as SocketUserMessage;
-            if(msg == null) return;
-            var context = new SocketCommandContext(_client, msg);
-            int argPos = 0;
-            if(msg.HasStringPrefix("!", ref argPos)
-                || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
-                {
-                    var result = await _commandService.ExecuteAsync(context, argPos, null);
-                    if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-                    {
-                        Console.WriteLine(result.ErrorReason);
-                    }
-                } else if(msg.Content == "chlebek" || msg.Content == "kebab" || msg.Content == "test")
-                {
-                    var result = await _commandService.ExecuteAsync(context, argPos, null);
-                    if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-                    {
-                        Console.WriteLine(result.ErrorReason);
-                    }
-                }
-        }
-
-        [Command("playing")]
-        [RequireOwner]
-        public async Task SetGame(ActivityType activityType, [Remainder]string game)
-        {
-            await _client.SetGameAsync(game, null, activityType);
-        }
+        #endregion
     }
 }
