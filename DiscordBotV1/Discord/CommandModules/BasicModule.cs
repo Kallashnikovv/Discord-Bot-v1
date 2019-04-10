@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 public class BasicModule : ModuleBase<SocketCommandContext>
 {
+
     [Command("say")]
     [RequireBotPermission(GuildPermission.ViewChannel)]
     [RequireBotPermission(GuildPermission.SendMessages)]

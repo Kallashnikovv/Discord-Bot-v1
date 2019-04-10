@@ -15,7 +15,7 @@ namespace DiscordBotV1.Discord
 		public Connection(DiscordLogger logger, DiscordSocketClient client)
 		{
 			_logger = logger;
-			_client = client; 
+            _client = client;
 		}
 
 		internal async Task ConnectAsync(BotConfig config)
@@ -24,7 +24,7 @@ namespace DiscordBotV1.Discord
 
 			await _client.LoginAsync(TokenType.Bot, config.Token);
 			await _client.StartAsync();
-			await _client.SetGameAsync("Choroszcz", null, ActivityType.Playing);
+			await _client.SetGameAsync(config.NowPlaying, null, ActivityType.Playing);
 			await _client.SetStatusAsync(UserStatus.DoNotDisturb);
 						
 			_handler = new CommandHandler();
