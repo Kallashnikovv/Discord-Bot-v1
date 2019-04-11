@@ -49,13 +49,25 @@ namespace DiscordBotV1.Discord.CommandModules
             DateTime a = new DateTime();
             if (now.Hour >= 21 && now.Minute > 37 && now.Second > 0 || now.Hour >= 22) { a = hour.AddDays(1); } else { a = hour; }
             TimeSpan diff1 = a.Subtract(now);
-            await Context.Channel.SendMessageAsync($"Zostało jeszcze {diff1.Hours} godzin {diff1.Minutes} minut {diff1.Seconds} sekund.");
+
+            var embed = new EmbedBuilder()
+                .WithColor(255, 255, 255)
+                .WithAuthor("Time left:")
+                .WithTitle($"{diff1.Hours}:{diff1.Minutes}:{diff1.Seconds}");
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("8ball")]
         public async Task YesNoGame([Remainder]string question)
         {
-
+            string[] answers;
+            answers = new String[]
+            {
+                "Yes.",
+                "No.",
+                "Absolutly!",
+                "(╯°□°）╯︵ ┻━┻"
+            };
         }
 
     }

@@ -19,12 +19,16 @@ namespace DiscordBotV1.Discord.Handlers
             _client = client;
             _commandService = new CommandService();
             await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+            HookEvents();
+        }
+
+        internal void HookEvents()
+        {
             _client.MessageReceived += HandleCommandAsync;
             _client.MessageReceived += ClientCom_Log;
             _client.MessageDeleted += MsgDelClient_Log;
             //_client.MessageUpdated += MsgEdtClient_Log;
         }
-
 
         private async Task HandleCommandAsync(SocketMessage s)
         {
