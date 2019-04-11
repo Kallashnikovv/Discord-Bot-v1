@@ -46,8 +46,9 @@ namespace DiscordBotV1.Discord.CommandModules
         {
             DateTime hour = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 21, 37, 00);
             DateTime now = DateTime.Now;
-            if (now.Hour > 21) return;
-            TimeSpan diff1 = hour.Subtract(now);
+            DateTime a = new DateTime();
+            if (now.Hour >= 21 && now.Minute > 37 && now.Second > 0 || now.Hour >= 22) { a = hour.AddDays(1); } else { a = hour; }
+            TimeSpan diff1 = a.Subtract(now);
             await Context.Channel.SendMessageAsync($"Zostało jeszcze {diff1.Hours} godzin {diff1.Minutes} minut {diff1.Seconds} sekund.");
         }
 
