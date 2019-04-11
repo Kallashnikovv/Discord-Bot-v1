@@ -5,10 +5,11 @@ namespace DiscordBotV1.Discord.CommandModules
 {
     public class ConfigModule : ModuleBase<SocketCommandContext>
     {
-        [Command("prefix")]
+        [Command("cprefix")]
+        [RequireOwner]
         public async Task ChangePrefix(string prefix)
         {
-
+            await Context.Channel.SendMessageAsync("IT WORKS!");
         }
 
 

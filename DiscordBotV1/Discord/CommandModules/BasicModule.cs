@@ -1,6 +1,5 @@
 using Discord;
 using Discord.Commands;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,14 +45,6 @@ public class BasicModule : ModuleBase<SocketCommandContext>
         await Context.Channel.SendMessageAsync(message, true);
     }
 
-    [Command("test", true), Alias("attempt")]
-    [RequireBotPermission(GuildPermission.ViewChannel)]
-    [RequireBotPermission(GuildPermission.SendMessages)]
-    private async Task SayTest()
-    {
-        await Context.Channel.SendMessageAsync("1, 2, 3, test, test, test.");
-    }
-
     [Command("chlebek", true), Alias("chleb")]
     [RequireBotPermission(GuildPermission.ViewChannel)]
     [RequireBotPermission(GuildPermission.SendMessages)]
@@ -69,31 +60,4 @@ public class BasicModule : ModuleBase<SocketCommandContext>
     {
         await Context.Channel.SendMessageAsync("Kabab Boży");
     }
-
-    [Command("jpg")]
-    private async Task SendRandImage()
-    {
-        string[] images;
-        images = new String[]
-        {
-            "jpg/meme1.jpg",
-            "jpg/meme2.jpg",
-            "jpg/meme3.jpg",
-        };
-
-        Random rand;
-        rand = new Random();
-
-        int randomIndex = rand.Next(images.Length);
-
-        string imgToPost = images[randomIndex];
-
-        await Context.Channel.SendFileAsync(imgToPost);
-    }
-}
-
-//Konon kiedyś powiedział:
-
-//          "jpg/konon1.jpg",
-//          "jpg/konon2.jpg",
-//          "jpg/konon3.jpg",
+}   

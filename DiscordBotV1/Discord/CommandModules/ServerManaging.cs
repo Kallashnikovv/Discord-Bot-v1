@@ -8,10 +8,21 @@ public class ServerManaging : ModuleBase<SocketCommandContext>
     
     [Command("cls")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public async Task Cls(int amount)
+
+    public async Task Cls(int amount = 5)
     {
         if (amount <= 100)
         {
+            await Context.Channel.TriggerTypingAsync();
+
+            var delay = 3;
+            var msg = $"Bulk removing {amount} messages!";
+
+
+            _ = SendAndDelayedDeleteMessageAsync(msg, delay, true);
+
+            await Task.Delay(3000);
+            amount += 1;
             var messages = await Context.Channel.GetMessagesAsync(amount).FlattenAsync();
             messages = messages.Where(m => !m.IsPinned);
             await ((ITextChannel) Context.Channel).DeleteMessagesAsync(messages);
@@ -66,8 +77,8 @@ public class ServerManaging : ModuleBase<SocketCommandContext>
         {
         await Task.Delay(milisecoonds);
         await msg.DeleteAsync();
-        if(deleteCmnd == true) { await Context.Message.DeleteAsync(); }
         }
+        if(deleteCmnd == true) { await Context.Message.DeleteAsync(); }
     }
     #endregion
 }

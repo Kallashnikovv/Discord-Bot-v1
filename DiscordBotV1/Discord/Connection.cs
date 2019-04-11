@@ -14,23 +14,17 @@ namespace DiscordBotV1.Discord
 
 		public Connection(DiscordLogger logger, DiscordSocketClient client)
 		{
-            var config = new DiscordSocketConfig
-            {
-                AlwaysDownloadUsers = true,
-                MessageCacheSize = 100
-            };
-            client = new DiscordSocketClient(config);
             _logger = logger;
             _client = client;
         }
 
-		internal async Task ConnectAsync(BotConfig config)
+		internal async Task ConnectAsync()
 		{
 			_client.Log += _logger.Log;
 
-			await _client.LoginAsync(TokenType.Bot, config.Token);
+			await _client.LoginAsync(TokenType.Bot, Global.BotConfig.Token);
 			await _client.StartAsync();
-			await _client.SetGameAsync(config.NowPlaying, null, ActivityType.Playing);
+			await _client.SetGameAsync(Global.BotConfig.NowPlaying, null, ActivityType.Playing);
 			await _client.SetStatusAsync(UserStatus.DoNotDisturb);
 						
 			_handler = new CommandHandler();

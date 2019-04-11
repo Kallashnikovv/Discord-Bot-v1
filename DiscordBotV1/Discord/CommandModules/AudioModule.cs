@@ -17,7 +17,7 @@ public class AudioModule : ModuleBase<SocketCommandContext>
         var AudioClient = await channel.ConnectAsync();
         
         Console.WriteLine($"{Context.Message.Author} {channel.Name}");
-        await ReplyAsync("Connected");
+        await ReplyAsync($"Connected to {channel.Name}");
     }
     
     /*[Command("leave", RunMode = RunMode.Async)]

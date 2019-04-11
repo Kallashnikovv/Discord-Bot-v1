@@ -8,12 +8,14 @@ namespace DiscordBotV1.Discord.CommandModules
     {
         [Command("spam")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task Spam(int amount = 10, [Remainder]string msg = "~Spam!")
+        public async Task Spam(int amount = 5, [Remainder]string msg = "~Spam!")
         {
+            int x = 0;
             while(amount != 0)
             {
+                x++;
                 amount--;
-                await Context.Channel.SendMessageAsync(msg);
+                await Context.Channel.SendMessageAsync(x + ". " + msg);
             }
         }
     }
