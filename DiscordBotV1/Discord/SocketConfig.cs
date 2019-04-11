@@ -9,8 +9,10 @@ namespace DiscordBotV1.Discord
 		{
 			return new DiscordSocketConfig
 			{
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 100,
 				LogLevel = LogSeverity.Verbose
-			};
+            };
 		}
 
 		public static DiscordSocketConfig GetNew()

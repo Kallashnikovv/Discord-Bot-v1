@@ -32,7 +32,7 @@ namespace DiscordBotV1.Discord.Handlers
             if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
-            if (msg.HasStringPrefix("!", ref argPos)
+            if (msg.HasStringPrefix(Global.BotConfig.Prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _commandService.ExecuteAsync(context, argPos, null);
@@ -41,7 +41,7 @@ namespace DiscordBotV1.Discord.Handlers
                     Console.WriteLine(result.ErrorReason);
                 }
             }
-            else if (msg.Content == "chlebek" || msg.Content == "kebab" || msg.Content == "test")
+            else if (msg.Content.Contains("chlebek") || msg.Content.Contains("kebab") || msg.Content.Contains("papaj"))
             {
                 var result = await _commandService.ExecuteAsync(context, argPos, null);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
@@ -59,13 +59,19 @@ namespace DiscordBotV1.Discord.Handlers
             var embed = new EmbedBuilder();
             embed.WithColor(255, 235, 25);
 
-            if (!msg.Author.IsBot)
+            var message = msg as SocketUserMessage;
+            var server = msg.Channel as SocketGuildChannel;
+
+            int argPos = 0;
+            if (!msg.Author.IsBot && message.HasStringPrefix(Global.BotConfig.Prefix, ref argPos))
             {
-                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
+                embed.WithAuthor("Command executed");
+                embed.AddField($"{msg.Author}", $"User Id: {msg.Author.Id}");
+                embed.AddField($"Guild: {server.Guild.Name}", $"Id: {server.Guild.Id}");
+                embed.AddField($"Channel: #{msg.Channel.Name}", $"Id: {msg.Channel.Id}");
+                embed.AddField($"Message content:", msg.Content);
+                embed.WithFooter($"Message Id: {msg.Id}");
                 embed.WithTimestamp(msg.CreatedAt);
-                embed.WithFooter("ID:" + msg.Id);
-                embed.AddField("User Id: " + msg.Author.Id.ToString(), null);
-                embed.WithDescription(msg.Content);
                 await channel.SendMessageAsync("", false, embed.Build());
             }
         }
@@ -77,19 +83,20 @@ namespace DiscordBotV1.Discord.Handlers
             var embed = new EmbedBuilder();
             embed.WithColor(221, 95, 83);
 
-            Console.WriteLine(cachedMessage.Value.Content);
-
             if (cachedMessage.Value is null) return;
 
             var msg = cachedMessage.Value as SocketUserMessage;
+            var server = msg.Channel as SocketGuildChannel;
 
-            if (!msg.Author.IsBot)
+            if (!msg.Author.IsBot && !msg.Content.Contains("!cls"))
             {
-                embed.WithAuthor(msg.Author.Username + "#" + msg.Author.Discriminator);
-                embed.WithFooter("ID: " + msg.Id);
+                embed.WithAuthor("Message deleted");
+                embed.AddField($"{msg.Author}", $"User Id: {msg.Author.Id}");
+                embed.AddField($"Guild: {server.Guild.Name}", $"Id: {server.Guild.Id}");
+                embed.AddField($"Channel: #{msg.Channel.Name}", $"Id: {msg.Channel.Id}");
+                embed.AddField($"Message content:", msg.Content);
+                embed.WithFooter($"Message Id: {msg.Id}");
                 embed.WithTimestamp(msg.CreatedAt);
-                embed.AddField("User Id: " + msg.Author.Id.ToString(), "\u200b");
-                embed.WithDescription(msg.Content);
                 await channel.SendMessageAsync("", false, embed.Build());
             }
         }

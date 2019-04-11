@@ -18,7 +18,9 @@ namespace DiscordBotV1
 
             var botConfig = storage.RestoreObject<BotConfig>("Config/Config");
 
-            await connection.ConnectAsync(botConfig);
+            Global.BotConfig = botConfig;
+
+            await connection.ConnectAsync();
 		}
 	}
 }
