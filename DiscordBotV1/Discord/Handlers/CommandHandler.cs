@@ -56,8 +56,9 @@ namespace DiscordBotV1.Discord.Handlers
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
             var channel = guild.GetTextChannel(564491145325969428); // channel id
-            var embed = new EmbedBuilder();
-            embed.WithColor(255, 235, 25);
+            var embed = new EmbedBuilder()
+                .WithColor(255, 235, 25)
+                .WithThumbnailUrl("https://i.gyazo.com/d51b75c8148b4c194d96e222f404a32b.png");
 
             var message = msg as SocketUserMessage;
             var server = msg.Channel as SocketGuildChannel;
@@ -80,8 +81,9 @@ namespace DiscordBotV1.Discord.Handlers
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
             var channel = guild.GetTextChannel(565255635227246609); // channel id
-            var embed = new EmbedBuilder();
-            embed.WithColor(221, 95, 83);
+            var embed = new EmbedBuilder()
+                .WithColor(221, 95, 83)
+                .WithThumbnailUrl("https://i.gyazo.com/b7b89f1f02f663a30d371f06f3ce00c8.png");
 
             if (cachedMessage.Value is null) return;
 
