@@ -348,3 +348,7 @@ MigrationBackup/
 
 # Application directory
 Config/
+
+# Logs
+logs/
+*.gz

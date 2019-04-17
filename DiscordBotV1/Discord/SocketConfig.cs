@@ -11,7 +11,7 @@ namespace DiscordBotV1.Discord
 			{
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 100,
-				LogLevel = LogSeverity.Verbose
+				LogLevel = LogSeverity.Debug
             };
 		}
 

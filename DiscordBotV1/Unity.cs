@@ -8,6 +8,8 @@ using DiscordBotV1.Storage;
 using DiscordBotV1.Storage.Implementations;
 using System.Reflection;
 using System.Linq;
+using Victoria;
+using Discord.Commands;
 
 namespace DiscordBotV1
 {
@@ -31,8 +33,11 @@ namespace DiscordBotV1
 			_container.RegisterSingleton<IDataStorage, JsonStorage>();
 			_container.RegisterSingleton<ILogger, Logger>();
 			_container.RegisterType<DiscordSocketConfig>(new InjectionFactory(i => SocketConfig.GetDefault())); //TODO: Exchange to IUnityContainer
+			_container.RegisterType<CommandServiceConfig>(new InjectionFactory(i => CommandServicesConfig.GetDefault())); //TODO: Exchange to IUnityContainer
 			_container.RegisterSingleton<DiscordSocketClient>(new InjectionConstructor(typeof(DiscordSocketConfig)));
-			_container.RegisterSingleton<Discord.Connection>();
+			_container.RegisterSingleton<Connection>();
+			_container.RegisterSingleton<LavaRestClient>();
+			_container.RegisterSingleton<LavaSocketClient>();
 		}
 
 		public static T Resolve<T>(this IUnityContainer container, object ParameterOverrides)

@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 public class BasicModule : ModuleBase<SocketCommandContext>
 {
+    [Command("ping")]
+    public async Task Ping()
+    {
+        await ReplyAsync($"Pong! {Context.Client.Latency}ms");
+    }
 
     [Command("say")]
     [RequireBotPermission(GuildPermission.ViewChannel)]

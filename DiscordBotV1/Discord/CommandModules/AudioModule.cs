@@ -2,33 +2,74 @@ using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
 using System;
+using DiscordBotV1.Discord.Services;
+using Discord.WebSocket;
 
 public class AudioModule : ModuleBase<SocketCommandContext>
 {
+    private readonly AudioService _audioService;
 
-    [Command("join", RunMode = RunMode.Async)] 
-    public async Task JoinChannel(IVoiceChannel channel = null)
+    public AudioModule(AudioService audioService)
     {
-        // Get the audio channel
-        channel = channel ?? (Context.User as IGuildUser)?.VoiceChannel;
-        if (channel == null) { await Context.Channel.SendMessageAsync("User must be in a voice channel, or a voice channel must be passed as an argument."); return; }
+        _audioService = audioService;
+    }
 
-        // For the next step with transmitting audio, you would want to pass this Audio Client in to a service.
-        var AudioClient = await channel.ConnectAsync();
-        
-        Console.WriteLine($"{Context.Message.Author} {channel.Name}");
-        await ReplyAsync($"Connected to {channel.Name}");
+    [Command("Join"), Alias("j")] 
+    public async Task Join()
+    {
+        var user = Context.User as SocketGuildUser;
+        if (user.VoiceChannel is null)
+        {
+            await ReplyAsync("You need to connect to a voice channel.");
+            return;
+        }
+        else
+        {
+            await _audioService.ConnectAsync(user.VoiceChannel, Context.Channel as ITextChannel);
+            await ReplyAsync($"Connected to {user.VoiceChannel.Name}!");
+        }
     }
     
-    /*[Command("leave", RunMode = RunMode.Async)]
-    public async Task LeaveChannel()
+    [Command("Leave"), Alias("l")]
+    public async Task Leave()
     {
-        
+        var user = Context.User as SocketGuildUser;
+        await _audioService.DisconnectAsync();
+        await ReplyAsync($"Disconnected from {user.VoiceChannel.Name}!");
     }
 
-    [Command("play", RunMode = RunMode.Async)]
-    public async Task PlayCmd([Remainder]string song)
+    [Command("Play"), Alias("p")]
+    public async Task Play([Remainder]string query)
     {
-        
-    }*/
+        var user = Context.User as SocketGuildUser;
+        await ReplyAsync(await _audioService.PlayAsync(query, Context.Guild.Id, user.VoiceChannel, Context.Channel as ITextChannel));
+    }
+
+    [Command("Stop")]
+    public async Task Stop()
+        => await _audioService.StopAsync();
+
+    [Command("Skip")]
+    public async Task Skip()
+        => await ReplyAsync(await _audioService.SkipAsync());
+
+    [Command("Volume"), Alias("vol")]
+    public async Task Volume(int vol)
+        => await ReplyAsync(await _audioService.SetVolumeAsync(vol));
+
+    [Command("Pause"), Alias("p")]
+    public async Task Pause()
+        => await ReplyAsync(await _audioService.PauseOrResumeAsync());
+
+    [Command("Resume"), Alias("res")]
+    public async Task Resume()
+        => await ReplyAsync(await _audioService.ResumeAsync());
+
+    [Command("NowPlaying"), Alias("np")]
+    public async Task NowPlaying()
+        => await ReplyAsync(_audioService.NowPlaying());
+
+    [Command("Seek"), Alias("s")]
+    public async Task Seek(TimeSpan time)
+        => await ReplyAsync(await _audioService.SeekAsync(time));
 }
