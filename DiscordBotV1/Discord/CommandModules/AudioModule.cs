@@ -67,9 +67,13 @@ public class AudioModule : ModuleBase<SocketCommandContext>
 
     [Command("NowPlaying"), Alias("np")]
     public async Task NowPlaying()
-        => await ReplyAsync(_audioService.NowPlaying());
+        => await ReplyAsync("", false, await _audioService.NowPlayingAsync());
 
     [Command("Seek"), Alias("s")]
-    public async Task Seek(TimeSpan time)
-        => await ReplyAsync(await _audioService.SeekAsync(time));
+    public async Task Seek(string query)
+        => await ReplyAsync(await _audioService.SeekAsync(query));
+
+    [Command("Queue"), Alias("q")]
+    public async Task Queue()
+        => await ReplyAsync(_audioService.Queue());
 }

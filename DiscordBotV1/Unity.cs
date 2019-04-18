@@ -36,8 +36,6 @@ namespace DiscordBotV1
 			_container.RegisterType<CommandServiceConfig>(new InjectionFactory(i => CommandServicesConfig.GetDefault())); //TODO: Exchange to IUnityContainer
 			_container.RegisterSingleton<DiscordSocketClient>(new InjectionConstructor(typeof(DiscordSocketConfig)));
 			_container.RegisterSingleton<Connection>();
-			_container.RegisterSingleton<LavaRestClient>();
-			_container.RegisterSingleton<LavaSocketClient>();
 		}
 
 		public static T Resolve<T>(this IUnityContainer container, object ParameterOverrides)
