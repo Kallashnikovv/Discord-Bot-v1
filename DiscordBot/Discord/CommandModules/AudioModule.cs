@@ -42,7 +42,15 @@ public class AudioModule : ModuleBase<SocketCommandContext>
     public async Task Play([Remainder]string query)
     {
         var user = Context.User as SocketGuildUser;
-        await ReplyAsync(await _audioService.PlayAsync(query, Context.Guild.Id, user.VoiceChannel, Context.Channel as ITextChannel));
+        await _audioService.PlayAsync(query, Context.Guild.Id, user.VoiceChannel, Context.Channel as ITextChannel);
+    }
+
+    [Command("Search")]
+    [RequireOwner]
+    public async Task Search([Remainder]string query)
+    {
+        var user = Context.User as SocketGuildUser;
+        await ReplyAsync(await _audioService.SearchAsync(query, Context.Guild.Id, user.VoiceChannel, Context.Channel as ITextChannel));
     }
 
     [Command("Stop")]
@@ -54,7 +62,7 @@ public class AudioModule : ModuleBase<SocketCommandContext>
         => await ReplyAsync(await _audioService.SkipAsync());
 
     [Command("Volume"), Alias("vol")]
-    public async Task Volume(int vol)
+    public async Task Volume(int vol = 0)
         => await ReplyAsync(await _audioService.SetVolumeAsync(vol));
 
     [Command("Pause"), Alias("p")]

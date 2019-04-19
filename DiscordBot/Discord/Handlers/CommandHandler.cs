@@ -76,6 +76,12 @@ namespace DiscordBot.Discord.Handlers
             }
         }
 
+        #region Events
+
+        
+
+        #endregion
+
         #region Logging stuff
         private async Task ClientCom_Log(SocketMessage msg)
         {

@@ -61,7 +61,7 @@ namespace DiscordBot.Discord.Services
             }
 
             await player.PlayAsync(nextTrack);
-            await player.TextChannel.SendMessageAsync($"Now playing: **{nextTrack}**");
+            await player.TextChannel.SendMessageAsync($"Now playing: `{nextTrack}`");
         }
      
         #region Methods
@@ -97,35 +97,30 @@ namespace DiscordBot.Discord.Services
             if (_player.IsPlaying)
             {
                 _player.Queue.Enqueue(track);
-                if (track.Length >= hour)
-                {
-                return $"**{track.Title} :: {track.Length.ToString(@"hh\:mm\:ss")}** has been added to the queue!";
-                }
-                else if (track.Length >= min)
-                {
-                return $"**{track.Title} :: {track.Length.ToString(@"mm\:ss")}** has been added to the queue!";
-                }
-                else
-                {
-                return $"**{track.Title} :: {track.Length.ToString(@"m\:ss")}** has been added to the queue!";
-                }
+                return $"`{track.Title}` has been added to the queue!";
             }
             else
             {
                 await _player.PlayAsync(track);
-                if (_player.CurrentTrack.Length >= hour)
-                {
-                return $"Now playing: **{track.Title} :: {track.Length.ToString(@"hh\:mm\:ss")}**";
-                }
-                else if (_player.CurrentTrack.Length >= min)
-                {
-                return $"Now playing: **{track.Title} :: {track.Length.ToString(@"mm\:ss")}**";
-                }
-                else
-                {
-                return $"Now playing: **{track.Title} :: {track.Length.ToString(@"m\:ss")}**";
-                }
+                return $"**Playing**:notes: `{track.Title}`";
             }
+        }
+
+        //Work in progress
+        public async Task<string> SearchAsync(string query, ulong guildId, SocketVoiceChannel voiceChannel, ITextChannel textChannel)
+        {
+            var results = await _lavaRestClient.SearchYouTubeAsync(query);
+
+            if (results.LoadType == LoadType.NoMatches || results.LoadType == LoadType.LoadFailed)
+            {
+                return "No matches found.";
+            }
+            var tracks = results.Tracks.Select(x => $"`{x.Author} ::: {x.Title} / {x.Length}`");
+            foreach(var track in tracks)
+            {
+                Console.WriteLine(track);
+            }
+            return string.Join("\n", tracks);
         }
 
         public async Task StopAsync()
@@ -140,27 +135,20 @@ namespace DiscordBot.Discord.Services
             if(_player is null || _player.Queue.Items.Count() is 0) return "Nothing in queue.";
 
             var skipped = await _player.SkipAsync();
-            if (_player.CurrentTrack.Length >= hour)
-            {
-                return $"Skipped: **{skipped.Title}** \nNow playing: **{_player.CurrentTrack.Title} :: {_player.CurrentTrack.Length.ToString(@"hh\:mm\:ss")}**";
-            }
-            else if (_player.CurrentTrack.Length >= min)
-            {
-                return $"Skipped: **{skipped.Title}** \nNow playing: **{_player.CurrentTrack.Title} :: {_player.CurrentTrack.Length.ToString(@"mm\:ss")}**";
-            }
-            else
-            {
-                return $"Skipped: **{skipped.Title}** \nNow playing: **{_player.CurrentTrack.Title} :: {_player.CurrentTrack.Length.ToString(@"m\:ss")}**";
-            }
+            return $"Skipped: `{skipped.Title}` \nNow playing: `{_player.CurrentTrack.Title}`";
         }
 
         public async Task<string> SetVolumeAsync(int vol)
         {
             if (_player is null) return "Player isn't playing.";
+            if (vol is 0)
+            {
+                return $"Volume is `{_player.CurrentVolume}%`";
+            }
 
-            if (vol > 1000 || vol < 1) return "Please use a number between **1 - 1000**";
+            if (vol > 1000 || vol < 1) return "Please use a number between `1 - 1000`";
             await _player.SetVolumeAsync(vol);
-            return $"Volume set to : **{vol}%**";
+            return $"Volume set to: `{vol}%`";
         }
 
         public async Task<string> PauseOrResumeAsync()
@@ -199,29 +187,32 @@ namespace DiscordBot.Discord.Services
             var thumb = await track.FetchThumbnailAsync();
             TimeSpan time = TimeSpan.Parse(track.Position.ToString());
             var embed = new EmbedBuilder()
-                .WithAuthor($"Now Playing: {_player.CurrentTrack.Title}", thumb, $"{track.Uri}")
-                .WithThumbnailUrl(thumb)
-                .AddField("Author", track.Author, true);
+                .WithColor(Color.DarkBlue)
+                .WithAuthor("Now playing ♪", "https://i.gyazo.com/05cf5976acd07ea1cd403bd307188337.gif")
+                .WithTitle(track.Title)
+                .WithUrl(track.Uri.AbsoluteUri)
+                .AddField("Channel", $"`{track.Author}`", true)
+                .WithThumbnailUrl(thumb);
 
             if (track.Length >= hour)
-            {
-                embed.AddField("Length", $"{time.ToString(@"hh\:mm\:ss")}/{track.Length.ToString(@"hh\:mm\:ss")}", true);
-            }
-            else if (track.Length >= min)
-            {
-                embed.AddField("Length", $"{time.ToString(@"mm\:ss")}/{track.Length.ToString(@"mm\:ss")}", true);
-            }
-            else
-            {
-                embed.AddField("Length", $"{time.ToString(@"m\:ss")}/{track.Length.ToString(@"m\:ss")}", true);
-            }
+                {
+                    embed.AddField("Length", $"`{time.ToString(@"hh\:mm\:ss")} / {track.Length.ToString(@"hh\:mm\:ss")}`", true);
+                }
+                else if (track.Length >= min)
+                {
+                    embed.AddField("Length", $"`{time.ToString(@"mm\:ss")} / {track.Length.ToString(@"mm\:ss")}`", true);
+                }
+                else
+                {
+                    embed.AddField("Length", $"`{time.ToString(@"m\:ss")} / {track.Length.ToString(@"m\:ss")}`", true);
+                }
 
             return embed.Build();
-        }
+            }
 
         public string Queue()
         {
-            var tracks = _player.Queue.Items.Cast<LavaTrack>().Select(x => x.Title);
+            var tracks = _player.Queue.Items.Cast<LavaTrack>().Select(x => $"`{x.Title}` / `{x.Length}`");
             return tracks.Count() is 0 ?
                 "No tracks in queue." : string.Join("\n", tracks);
         }
@@ -234,19 +225,19 @@ namespace DiscordBot.Discord.Services
             {
                 TimeSpan time = TimeSpan.ParseExact(value, @"hh\:mm\:ss", CultureInfo.InvariantCulture);
                 await _player.SeekAsync(time);
-                return $"Seeked **{_player.CurrentTrack.Title}** to **{time.ToString(@"hh\:mm\:ss")}/{_player.CurrentTrack.Length.ToString(@"hh\:mm\:ss")}**";
+                return $":musical_note:**Set position to** `{time.ToString(@"hh\:mm\:ss")} / {_player.CurrentTrack.Length.ToString(@"hh\:mm\:ss")}` :fast_forward:";
             }
             else if (_player.CurrentTrack.Length >= min)
             {
                 TimeSpan time = TimeSpan.ParseExact(value, @"mm\:ss", CultureInfo.InvariantCulture);
                 await _player.SeekAsync(time);
-                return $"Seeked **{_player.CurrentTrack.Title}** to **{time.ToString(@"mm\:ss")}/{_player.CurrentTrack.Length.ToString(@"mm\:ss")}**";
+                return $":musical_note:**Set position to** `{time.ToString(@"mm\:ss")} / {_player.CurrentTrack.Length.ToString(@"mm\:ss")}` :fast_forward:";
             }
             else
             {
                 TimeSpan time = TimeSpan.ParseExact(value, @"m\:ss", CultureInfo.InvariantCulture);
                 await _player.SeekAsync(time);
-                return $"Seeked **{_player.CurrentTrack.Title}** to **{time.ToString(@"m\:ss")}/{_player.CurrentTrack.Length.ToString(@"m\:ss")}**";
+                return $":musical_note:**Set position to** `{time.ToString(@"m\:ss")} / {_player.CurrentTrack.Length.ToString(@"m\:ss")}` :fast_forward:";
             }
         }
 

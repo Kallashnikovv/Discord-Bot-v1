@@ -38,5 +38,25 @@ namespace DiscordBot.Discord.CommandModules
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
         }
+
+        [Command("Embed")]
+        public async Task Embed()
+        {
+            var embed = new EmbedBuilder()
+                .WithColor(Color.Red)
+                .WithAuthor("Author")
+                .WithTitle("Title")
+                .WithDescription("Description")
+                .WithThumbnailUrl("https://i.gyazo.com/05cf5976acd07ea1cd403bd307188337.gif")
+                .WithImageUrl("https://i.gyazo.com/6be4f07c28af3693a98404f0fa1f9d80.jpg")
+                .AddField("FieldName", "Object value")
+                .AddField("FieldName2", "inline = true", true)
+                .AddField("FieldName3", "inline = true", true)
+                .WithFooter("Footer")
+                .WithCurrentTimestamp()
+                .Build();
+
+            await ReplyAsync("Embed example:", false, embed);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using DiscordBot.Storage;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
@@ -9,9 +10,10 @@ namespace DiscordBot.Discord.CommandModules
         [RequireOwner]
         public async Task ChangePrefix(string prefix)
         {
-            await Context.Channel.SendMessageAsync("IT WORKS!");
+            var oldPrefix = Global.BotConfig.Prefix;
+
+            Global.BotConfig.Prefix = prefix;
+            await ReplyAsync($"Prefix changed from {oldPrefix} to {prefix} for now!");
         }
-
-
     }
 }
