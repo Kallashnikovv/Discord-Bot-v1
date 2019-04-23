@@ -10,8 +10,7 @@ namespace DiscordBot.Discord.CommandModules
         [Command("jpg")]
         private async Task SendRandImage()
         {
-            string[] images;
-            images = new String[]
+            string[] images = new String[]
             {
             "jpg/konon1.jpg",
             "jpg/konon2.jpg",
@@ -21,8 +20,7 @@ namespace DiscordBot.Discord.CommandModules
             "jpg/konon6.jpg"
             };
 
-            Random rand;
-            rand = new Random();
+            Random rand = new Random();
 
             int randomIndex = rand.Next(images.Length);
 

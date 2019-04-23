@@ -37,6 +37,12 @@ namespace DiscordBot.Discord.Handlers
             _client.MessageReceived += ClientCom_Log;
             _client.MessageDeleted += MsgDelClient_Log;
             //_client.MessageUpdated += MsgEdtClient_Log;
+            _client.ReactionAdded += OnReactionAdded;
+        }
+
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
