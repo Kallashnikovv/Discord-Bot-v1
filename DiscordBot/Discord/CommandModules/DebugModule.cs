@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
@@ -57,6 +58,15 @@ namespace DiscordBot.Discord.CommandModules
                 .Build();
 
             await ReplyAsync("Embed example:", false, embed);
+        }
+
+        [Command("DebugReact")]
+        public async Task React()
+        {
+            var message = await Context.Channel.SendMessageAsync("Reaction test!");
+
+            var emoji = new Emoji("😂");
+            await message.AddReactionAsync(emoji);
         }
     }
 }
