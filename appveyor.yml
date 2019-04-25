@@ -5,10 +5,6 @@ skip_tags: true
 before_build:
 - choco install opencover.portable
 - choco install codecov
-
-build:
-  project: DiscordBot/DiscordBot.sln
-  verbosity: minimal
   
 dotnet_csproj:
   patch: true
@@ -16,6 +12,9 @@ dotnet_csproj:
   version: '{version}'
   package_version: '{version}'
 
+build_script:
+    - dotnet build src -c Release
+  
 test_script:
 - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[DiscordBot.Core*]* -[DiscordBot.xUnit.Tests*]*" -output:".\MyProject_coverage.xml" -oldstyle
 - codecov -f "MyProject_coverage.xml
