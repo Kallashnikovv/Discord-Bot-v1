@@ -30,7 +30,7 @@ namespace DiscordBot
 		{
             _container = new UnityContainer();
 			_container.RegisterSingleton<IDataStorage, JsonStorage>();
-			_container.RegisterSingleton<ILogger, Logger>();
+			_container.RegisterSingleton<ILogger, DiscordBotLogger>();
 			_container.RegisterType<DiscordSocketConfig>(new InjectionFactory(i => SocketConfig.GetDefault())); //TODO: Exchange to IUnityContainer
 			_container.RegisterType<CommandServiceConfig>(new InjectionFactory(i => CommandServicesConfig.GetDefault())); //TODO: Exchange to IUnityContainer
 			_container.RegisterSingleton<DiscordSocketClient>(new InjectionConstructor(typeof(DiscordSocketConfig)));

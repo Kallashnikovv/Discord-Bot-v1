@@ -2,17 +2,18 @@
 using Discord.WebSocket;
 using Discord;
 using Discord.Commands;
+using DiscordBotBot.DiscordBotDiscord.Converters;
 
 namespace DiscordBot.Discord
 {
 	public class Connection
 	{
 		public DiscordSocketClient _client;
-		private readonly DiscordLogger _logger;
+		private readonly ILogger _logger;
         private CommandService _commandService;
         private HandlerInitializer _handlerInitializer;
 
-		public Connection(DiscordLogger logger, DiscordSocketClient client, CommandService commandService)
+		public Connection(ILogger logger, DiscordSocketClient client, CommandService commandService)
 		{
             _logger = logger;
             _client = client;
@@ -21,7 +22,7 @@ namespace DiscordBot.Discord
 
 		internal async Task ConnectAsync()
 		{
-			_client.Log += _logger.Log;
+            _client.Log += LogAsync;
 
 			await _client.LoginAsync(TokenType.Bot, Global.BotConfig.Token);
 			await _client.StartAsync();
@@ -33,5 +34,11 @@ namespace DiscordBot.Discord
 
 			await Task.Delay(-1);
 		}
-	}
+
+        private async Task LogAsync(LogMessage logMessage)
+        {
+            var DiscordBotLog = DiscordBotEntityConverter.CovertLog(logMessage);
+            await _logger.LogAsync(DiscordBotLog);
+        }
+    }
 }

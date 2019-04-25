@@ -4,8 +4,6 @@ using DiscordBot.Discord.Handlers;
 using DiscordBot.Discord.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Victoria;
 
@@ -14,14 +12,14 @@ namespace DiscordBot.Discord
     public class HandlerInitializer
     {
         public DiscordSocketClient _client;
-        private readonly DiscordLogger _logger;
+        private readonly ILogger _logger;
         private IServiceProvider _services;
         private readonly CommandService _commandService;
         private LoggingHandler _loggingHandler;
         private CommandHandler _commandHandler;
         private ReactionHandler _reactionHandler;
 
-        public HandlerInitializer(DiscordSocketClient client, CommandService commandService, DiscordLogger logger)
+        public HandlerInitializer(DiscordSocketClient client, CommandService commandService, ILogger logger)
         {
             _client = client;
             _commandService = commandService;

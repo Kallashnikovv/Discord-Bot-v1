@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordBotBot.DiscordBotDiscord.Converters;
 
 namespace DiscordBot.Discord.Handlers
 {
@@ -12,9 +13,9 @@ namespace DiscordBot.Discord.Handlers
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
         private readonly IServiceProvider _services;
-        private readonly DiscordLogger _logger;
+        private readonly ILogger _logger;
 
-        public CommandHandler(DiscordSocketClient client, CommandService commandService, IServiceProvider services, DiscordLogger logger)
+        public CommandHandler(DiscordSocketClient client, CommandService commandService, IServiceProvider services, ILogger logger)
         {
             _client = client;
             _commandService = commandService;
@@ -25,10 +26,10 @@ namespace DiscordBot.Discord.Handlers
         public async Task InitializeAsync()
         {
             await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-            
-            _commandService.Log += _logger.Log;
 
             _client.MessageReceived += HandleCommandAsync;
+            _commandService.CommandExecuted += CommandExecutedsync;
+            _commandService.Log += LogAsync;
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
@@ -68,5 +69,33 @@ namespace DiscordBot.Discord.Handlers
                 }
             }
         }
+
+        private async Task CommandExecutedsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        {
+            if (!command.IsSpecified)
+                return;
+            var commandLog = DiscordBotEntityConverter.ConvertCommandLog(context.Guild as SocketGuild, context.Channel as SocketGuildChannel, context.User as SocketGuildUser, command.Value);
+            if (result.IsSuccess)
+            {
+                await _logger.LogCommandAsync(commandLog);
+            }
+            else
+            {
+                await _logger.LogCommandAsync(commandLog, result.ErrorReason);
+                var embed = new EmbedBuilder()
+                    .WithTitle("ERROR")
+                    .WithDescription(result.ErrorReason)
+                    .WithColor(Color.DarkRed);
+
+                await context.Channel.SendMessageAsync(embed: embed.Build());
+            }
+        }
+
+        private async Task LogAsync(LogMessage logMessage)
+        {
+            var DiscordBotLog = DiscordBotEntityConverter.CovertLog(logMessage);
+            await _logger.LogAsync(DiscordBotLog);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordBotBot.DiscordBotDiscord.Converters;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DiscordBot.Discord.Services
         private LavaRestClient _lavaRestClient;
         private LavaSocketClient _lavaSocketClient;
         private DiscordSocketClient _client;
-        private DiscordLogger _logger;
+        private ILogger _logger;
         private LavaPlayer _player;
 
         private IVoiceChannel _voiceChannel;
@@ -22,7 +23,7 @@ namespace DiscordBot.Discord.Services
         private TimeSpan hour = TimeSpan.Parse("01:00:00");
         private TimeSpan min = TimeSpan.Parse("10:00");
 
-        public AudioService(LavaRestClient lavaRestClient, LavaSocketClient lavaSocketClient, DiscordSocketClient client, DiscordLogger logger)
+        public AudioService(LavaRestClient lavaRestClient, LavaSocketClient lavaSocketClient, DiscordSocketClient client, ILogger logger)
         {
             _logger = logger;
             _client = client;
@@ -38,9 +39,11 @@ namespace DiscordBot.Discord.Services
         private void HookEvents()
         {
             _client.Ready += ClientReadyAsync;
-            _lavaSocketClient.Log += _logger.Log;
+            _lavaSocketClient.Log += LogAsync;
             _lavaSocketClient.OnTrackFinished += TrackFinished;
         }
+
+
 
         private async Task ClientReadyAsync()
         {
@@ -63,7 +66,13 @@ namespace DiscordBot.Discord.Services
             await player.PlayAsync(nextTrack);
             await player.TextChannel.SendMessageAsync($"Now playing: `{nextTrack}`");
         }
-     
+
+        private async Task LogAsync(LogMessage logMessage)
+        {
+            var DiscordBotLog = DiscordBotEntityConverter.CovertLog(logMessage);
+            await _logger.LogAsync(DiscordBotLog);
+        }
+
         #region Methods
         public async Task ConnectAsync(SocketVoiceChannel voiceChannel, ITextChannel textChannel)
         {

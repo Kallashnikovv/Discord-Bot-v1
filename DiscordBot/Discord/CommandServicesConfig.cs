@@ -10,6 +10,7 @@ namespace DiscordBot.Discord
             return new CommandServiceConfig
             {
                 LogLevel = LogSeverity.Debug,
+                DefaultRunMode = RunMode.Async,
                 CaseSensitiveCommands = false
             };
         }
