@@ -3,9 +3,14 @@ image: Visual Studio 2019 Preview
 skip_tags: true
 
 before_build:
+- cd src
 - dotnet restore
 - choco install opencover.portable
 - choco install codecov
+  
+build:
+project: src\DiscordBot.sln
+verbosity: minimal
   
 dotnet_csproj:
   patch: true
