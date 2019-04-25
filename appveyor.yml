@@ -3,6 +3,7 @@ image: Visual Studio 2019 Preview
 skip_tags: true
 
 before_build:
+- dotnet restore
 - choco install opencover.portable
 - choco install codecov
   
