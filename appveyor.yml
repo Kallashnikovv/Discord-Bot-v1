@@ -9,7 +9,7 @@ before_build:
 - choco install codecov
   
 build:
-project: src/DiscordBot.sln
+project: DiscordBot.sln
 verbosity: minimal
   
 dotnet_csproj:
