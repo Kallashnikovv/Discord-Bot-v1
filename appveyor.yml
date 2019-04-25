@@ -19,6 +19,7 @@ build_script:
     - dotnet build src -c Release
   
 test_script:
-- dotnet test src
+- cd src
+- dotnet test
 - OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[DiscordBot.Core*]* -[DiscordBot.xUnit.Tests*]*" -output:".\MyProject_coverage.xml" -oldstyle
 - codecov -f "MyProject_coverage.xml
