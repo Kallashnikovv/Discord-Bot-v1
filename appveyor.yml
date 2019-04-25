@@ -17,5 +17,5 @@ dotnet_csproj:
   package_version: '{version}'
 
 test_script:
-- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[DiscordBot.Core*]* -[DiscordBot.xUnit.Tests*]*" -output:".\MyProject_coverage.xml" -oldstyle
+- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[DiscordBot*]* -[DiscordBot.xUnit.Tests*]*" -output:".\MyProject_coverage.xml" -oldstyle
 - codecov -f "MyProject_coverage.xml
