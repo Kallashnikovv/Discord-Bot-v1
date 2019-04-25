@@ -1,5 +1,4 @@
-using DiscordBot.Discord;
-using DiscordBot.Discord.Entities;
+﻿using DiscordBot.Discord;
 using System.Threading.Tasks;
 
 namespace DiscordBot
@@ -8,16 +7,9 @@ namespace DiscordBot
 	{
 		private static async Task Main()
 		{
-			Unity.RegisterTypes();
+            var start = new DiscordBotClient();
 
-            var storage = Unity.Resolve<IDataStorage>(null, new {val=1});
-            var connection = Unity.Resolve<Connection>(null, new {val=1});
-
-            var botConfig = storage.RestoreObject<BotConfig>("Config/Config");
-
-            Global.BotConfig = botConfig;
-
-            await connection.ConnectAsync();
+            await start.InitializeAsync();
 		}
 	}
 }

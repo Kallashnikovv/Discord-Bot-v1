@@ -3,12 +3,9 @@ using Unity.Injection;
 using Unity.Resolution;
 using Discord.WebSocket;
 using DiscordBot.Discord;
-using DiscordBot.Storage;
-using DiscordBot.Storage.Implementations;
 using System.Reflection;
 using System.Linq;
 using Discord.Commands;
-using System;
 
 namespace DiscordBot
 {
@@ -29,7 +26,6 @@ namespace DiscordBot
 		public static void RegisterTypes()
 		{
             _container = new UnityContainer();
-			_container.RegisterSingleton<IDataStorage, JsonStorage>();
 			_container.RegisterSingleton<ILogger, DiscordBotLogger>();
 			_container.RegisterType<DiscordSocketConfig>(new InjectionFactory(i => SocketConfig.GetDefault())); //TODO: Exchange to IUnityContainer
 			_container.RegisterType<CommandServiceConfig>(new InjectionFactory(i => CommandServicesConfig.GetDefault())); //TODO: Exchange to IUnityContainer
