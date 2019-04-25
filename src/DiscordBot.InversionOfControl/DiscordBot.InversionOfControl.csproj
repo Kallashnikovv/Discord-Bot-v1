@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiscordBot.Core\DiscordBot.Core.csproj" />
+    <ProjectReference Include="..\DiscordBot.Discord\DiscordBot.Discord.csproj" />
+  </ItemGroup>
+  
+</Project>
