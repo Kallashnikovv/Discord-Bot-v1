@@ -1,25 +1,22 @@
 version: 1.0.{build}
-image: Visual Studio 2017 Preview
+image: Visual Studio 2019 Preview
 skip_tags: true
+
+before_build:
+- nuget restore
+- choco install opencover.portable
+- choco install codecov
+
+build:
+  project: DiscordBot.sln
+  verbosity: minimal
+  
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
   version: '{version}'
   package_version: '{version}'
-build_script:
-  - dotnet build -c Release
+
 test_script:
-  - ps: >-
-      nuget install xunit.runner.console -OutputDirectory packages -Version 2.3.1
-      
-      nuget install OpenCover -OutputDirectory packages -Version 4.6.166
-
-      dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
-
-      .\packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -register:user -target:dotnet.exe "-targetargs:"".\packages\xunit.runner.console.2.3.1\tools\netcoreapp2.1\xunit.console.dll"" ""DiscordBotV1.xUnit.Tests\bin\Release\netcoreapp2.1\DiscordBotV1.xUnit.Tests.dll"" -noshadow -appveyor" -filter:"+[DiscordBotV1*]*" -oldStyle -output:opencoverCoverage.xml
-      
-      $coveralls = ".\tools\csmacnz.coveralls.exe"
-
-      & $coveralls --opencover -i opencoverCoverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
-
-      dotnet test DiscordBotV1.xUnit.Tests/DiscordBotV1.xUnit.Tests.csproj
+- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:test -filter:"+[DiscordBot.Core*]* -[DiscordBot.xUnit.Tests*]*" -output:".\MyProject_coverage.xml" -oldstyle
+- codecov -f "MyProject_coverage.xml
