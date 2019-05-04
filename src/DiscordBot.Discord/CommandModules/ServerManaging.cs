@@ -3,10 +3,11 @@ using Discord.Commands;
 using System.Linq;
 using System.Threading.Tasks;
 
+[Group, Name("Server")]
 public class ServerManaging : ModuleBase<SocketCommandContext>
 {
     
-    [Command("cls")]
+    [Command("Cls"), Alias("Purge")]
     [RequireUserPermission(GuildPermission.Administrator)]
 
     public async Task Cls(int amount = 5)

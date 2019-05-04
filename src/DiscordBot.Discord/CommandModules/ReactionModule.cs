@@ -5,9 +5,10 @@ using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
+[Group, Name("Reactions")]
 public class ReactionModule : ModuleBase<SocketCommandContext>
 {
-    [Command("react")]
+    [Command("React")]
     public async Task ReactTo(ulong id, string emote = null)
     {
         var message = Context.Channel.GetCachedMessage(id);
@@ -23,11 +24,5 @@ public class ReactionModule : ModuleBase<SocketCommandContext>
         var emoji = new Emoji(emote);
         await msg.AddReactionAsync(emoji);
         }
-    }
-
-    [Command("T")]
-    public async Task Test()
-    {
-
     }
 }

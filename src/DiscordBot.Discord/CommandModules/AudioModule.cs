@@ -1,10 +1,10 @@
 using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
-using System;
 using DiscordBot.Discord.Services;
 using Discord.WebSocket;
 
+[Group, Name("Audio")]
 public class AudioModule : ModuleBase<SocketCommandContext>
 {
     private readonly AudioService _audioService;
@@ -14,7 +14,7 @@ public class AudioModule : ModuleBase<SocketCommandContext>
         _audioService = audioService;
     }
 
-    [Command("Join"), Alias("j")] 
+    [Command("Join"), Alias("j")]
     public async Task Join()
     {
         var user = Context.User as SocketGuildUser;

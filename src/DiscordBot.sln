@@ -5,13 +5,15 @@ VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.Discord", "DiscordBot.Discord\DiscordBot.Discord.csproj", "{825FB391-D48E-41CB-A606-93287CDBEFA7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.xUnit.Tests", "DiscordBot.xUnit.Tests\DiscordBot.xUnit.Tests.csproj", "{3CD3E6B6-924B-4AC9-AE7A-53A701A379C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.Core.xUnit.Tests", "DiscordBot.Core.xUnit.Tests\DiscordBot.Core.xUnit.Tests.csproj", "{3CD3E6B6-924B-4AC9-AE7A-53A701A379C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.ConsoleApp", "DiscordBot.ConsoleApp\DiscordBot.ConsoleApp.csproj", "{15252036-02AE-4F34-94CB-B7CF58C4D74D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.InversionOfControl", "DiscordBot.InversionOfControl\DiscordBot.InversionOfControl.csproj", "{7DD6AE6D-0A22-4730-8971-6BFAD21790AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot.Core", "DiscordBot.Core\DiscordBot.Core.csproj", "{2E3BF647-0CE9-4BA8-84B6-FC61128889A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot.Core", "DiscordBot.Core\DiscordBot.Core.csproj", "{2E3BF647-0CE9-4BA8-84B6-FC61128889A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot.LiteDbStorage", "DiscordBot.LiteDbStorage\DiscordBot.LiteDbStorage.csproj", "{B84BF8B5-08B7-4255-9B90-46DB4D32E84B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{2E3BF647-0CE9-4BA8-84B6-FC61128889A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3BF647-0CE9-4BA8-84B6-FC61128889A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3BF647-0CE9-4BA8-84B6-FC61128889A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B84BF8B5-08B7-4255-9B90-46DB4D32E84B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B84BF8B5-08B7-4255-9B90-46DB4D32E84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B84BF8B5-08B7-4255-9B90-46DB4D32E84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B84BF8B5-08B7-4255-9B90-46DB4D32E84B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

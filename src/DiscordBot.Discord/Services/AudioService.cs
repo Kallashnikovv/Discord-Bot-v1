@@ -203,17 +203,17 @@ namespace DiscordBot.Discord.Services
                 .WithThumbnailUrl(thumb);
 
             if (track.Length >= hour)
-                {
-                    embed.AddField("Length", $"`{time.ToString(@"hh\:mm\:ss")} / {track.Length.ToString(@"hh\:mm\:ss")}`", true);
-                }
-                else if (track.Length >= min)
-                {
-                    embed.AddField("Length", $"`{time.ToString(@"mm\:ss")} / {track.Length.ToString(@"mm\:ss")}`", true);
-                }
-                else
-                {
-                    embed.AddField("Length", $"`{time.ToString(@"m\:ss")} / {track.Length.ToString(@"m\:ss")}`", true);
-                }
+            {
+                embed.AddField("Length", $"`{time.ToString(@"hh\:mm\:ss")} / {track.Length.ToString(@"hh\:mm\:ss")}`", true);
+            }
+            else if (track.Length >= min)
+            {
+                embed.AddField("Length", $"`{time.ToString(@"mm\:ss")} / {track.Length.ToString(@"mm\:ss")}`", true);
+            }
+            else
+            {
+                embed.AddField("Length", $"`{time.ToString(@"m\:ss")} / {track.Length.ToString(@"m\:ss")}`", true);
+            }
 
             return embed.Build();
             }

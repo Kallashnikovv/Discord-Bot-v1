@@ -3,6 +3,7 @@ using DiscordBot.Discord.Data.Entities;
 using DiscordBot.Discord.Data.Interfaces;
 using DiscordBot.Discord.Data;
 using System;
+using System.Threading;
 
 namespace DiscordBot.Discord
 {
@@ -11,11 +12,12 @@ namespace DiscordBot.Discord
         private readonly IDiscordBotJsonDataService _dataServices;
         private BotConfig _config;
 
+        private CancellationTokenSource _tokenSource;
+
         public DiscordBotClient()
         {
             _dataServices = _dataServices ?? new DiscordBotJsonDataService();
         }
-
         public async Task InitializeAsync()
         {
             Unity.RegisterTypes();
@@ -25,7 +27,8 @@ namespace DiscordBot.Discord
 
             Global.BotConfig = _config;
 
-            await connection.ConnectAsync();
+            _tokenSource = new CancellationTokenSource();
+            await connection.ConnectAsync(_tokenSource.Token);
         }
 
         private async Task<BotConfig> InitializeConfigAsync()

@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DiscordBot.Core\DiscordBot.Core.csproj" />
     <ProjectReference Include="..\DiscordBot.Discord\DiscordBot.Discord.csproj" />
+    <ProjectReference Include="..\DiscordBot.LiteDbStorage\DiscordBot.LiteDbStorage.csproj" />
   </ItemGroup>
   
 </Project>

@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
 {
+    [Group, Name("Fun")]
     public class FunModule : ModuleBase<SocketCommandContext>
     {
-        [Command("jpg")]
+        [Command("Jpg")]
         private async Task SendRandImage()
         {
             string[] images = new String[]
@@ -29,7 +30,7 @@ namespace DiscordBot.Discord.CommandModules
             await Context.Channel.SendFileAsync(imgToPost);
         }
 
-        [Command("papaj")]
+        [Command("Papaj")]
         public async Task Papaj()
         {
             var embed = new EmbedBuilder()
@@ -42,17 +43,47 @@ namespace DiscordBot.Discord.CommandModules
         [Command("2137")]
         public async Task TimeLeft()
         {
-            DateTime hour = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 21, 37, 00);
+            DateTime time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 21, 37, 00);
             DateTime now = DateTime.Now;
             DateTime a = new DateTime();
-            if (now.Hour >= 21 && now.Minute > 37 && now.Second > 0 || now.Hour >= 22) { a = hour.AddDays(1); } else { a = hour; }
+
+            if (now.Hour >= 21 && now.Minute > 37 && now.Second > 0 || now.Hour >= 22) { a = time.AddDays(1); } else { a = time; }
             TimeSpan diff1 = a.Subtract(now);
 
             var embed = new EmbedBuilder()
                 .WithColor(255, 255, 255)
-                .WithAuthor("Time left:")
-                .WithTitle($"{diff1.Hours}:{diff1.Minutes}:{diff1.Seconds}");
+                .WithAuthor("Time left:");
+            
+            if (diff1.Hours >= 1)
+            {
+                embed.WithTitle($"{diff1.ToString(@"hh\:mm\:ss")}");
+            }
+            else if (diff1.Minutes >= 10)
+            {
+                embed.WithTitle($"{diff1.ToString(@"mm\:ss")}");
+            }
+            else
+            {
+                embed.WithTitle($"{diff1.ToString(@"m\:ss")}");
+            }
+
             await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("Chlebek", true), Alias("chleb")]
+        [RequireBotPermission(GuildPermission.ViewChannel)]
+        [RequireBotPermission(GuildPermission.SendMessages)]
+        private async Task SayChlebek()
+        {
+            await Context.Channel.SendMessageAsync("Chlebek Boży");
+        }
+
+        [Command("Kabab", true), Alias("kebab")]
+        [RequireBotPermission(GuildPermission.ViewChannel)]
+        [RequireBotPermission(GuildPermission.SendMessages)]
+        private async Task SayKabab()
+        {
+            await Context.Channel.SendMessageAsync("Kabab Boży");
         }
 
         [Command("8ball")]

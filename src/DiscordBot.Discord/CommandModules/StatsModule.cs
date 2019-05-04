@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
 {
-    [Group("stats")]
+    [Group("Stats")]
     public class StatsModule : ModuleBase<SocketCommandContext>
     {
-        [Command("hour")]
+        [Command("Hour")]
         public async Task Hour(string channelName)
         {
             var time = DateTime.Now.ToString(@"h\:mm");

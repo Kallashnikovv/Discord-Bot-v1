@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
 {
+    [Group, Name("Config")]
     public class ConfigModule : ModuleBase<SocketCommandContext>
     {
-        [Command("cprefix")]
+        [Command("CPrefix")]
         [RequireOwner]
         public async Task ChangePrefix(string prefix)
         {

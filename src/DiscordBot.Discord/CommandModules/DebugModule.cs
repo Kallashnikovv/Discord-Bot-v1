@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Discord.CommandModules
 {
+    [Group, Name("Debug")]
     public class DebugModule : ModuleBase<SocketCommandContext>
     {
-        [Command("spam")]
+        [Command("Spam")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Spam(int amount = 5, [Remainder]string msg = "~Spam!")
         {
@@ -20,7 +21,7 @@ namespace DiscordBot.Discord.CommandModules
             }
         }
 
-        [Command("avatar")]
+        [Command("Avatar")]
         public async Task GetAvatar(IUser user = null)
         {
             if(user is null)

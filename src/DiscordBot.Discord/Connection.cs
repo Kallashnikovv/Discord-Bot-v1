@@ -4,6 +4,8 @@ using Discord;
 using Discord.Commands;
 using DiscordBot.Discord.Converters;
 using DiscordBot.Core.Services.Logger;
+using System.Threading;
+using System;
 
 namespace DiscordBot.Discord
 {
@@ -21,19 +23,26 @@ namespace DiscordBot.Discord
             _commandService = commandService;
         }
 
-		internal async Task ConnectAsync()
+		internal async Task ConnectAsync(CancellationToken cancellationToken)
 		{
             _client.Log += LogAsync;
+            try
+            {
+                await _client.LoginAsync(TokenType.Bot, Global.BotConfig.Token);
+			    await _client.StartAsync();
 
-			await _client.LoginAsync(TokenType.Bot, Global.BotConfig.Token);
-			await _client.StartAsync();
-			await _client.SetGameAsync(Global.BotConfig.NowPlaying, null, ActivityType.Playing);
-			await _client.SetStatusAsync(UserStatus.DoNotDisturb);
+			    await _client.SetGameAsync(Global.BotConfig.NowPlaying, null, ActivityType.Playing);
+			    await _client.SetStatusAsync(UserStatus.DoNotDisturb);
 
-            _handlerInitializer = new HandlerInitializer(_client, _commandService, _logger);
-            await _handlerInitializer.InitializeAsync();
+                _handlerInitializer = new HandlerInitializer(_client, _commandService, _logger);
+                await _handlerInitializer.InitializeAsync();
 
-			await Task.Delay(-1);
+			    await Task.Delay(-1, cancellationToken);
+            }
+            catch (Exception)
+            {
+                await _client.StopAsync();
+            }
 		}
 
         private async Task LogAsync(LogMessage logMessage)

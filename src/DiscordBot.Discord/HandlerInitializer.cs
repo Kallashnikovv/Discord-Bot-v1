@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Victoria;
+using DiscordBot.Discord.CommandModules;
 
 namespace DiscordBot.Discord
 {
@@ -19,6 +20,7 @@ namespace DiscordBot.Discord
         private LoggingHandler _loggingHandler;
         private CommandHandler _commandHandler;
         private ReactionHandler _reactionHandler;
+        private HelpModule _helpModule;
 
         public HandlerInitializer(DiscordSocketClient client, CommandService commandService, ILogger logger)
         {
@@ -39,6 +41,8 @@ namespace DiscordBot.Discord
 
             _reactionHandler = new ReactionHandler(_client);
             await _reactionHandler.Initialize();
+
+            _helpModule = new HelpModule(_commandService);
 
             await _services.GetRequiredService<AudioService>().InitializeAsync();
         }
