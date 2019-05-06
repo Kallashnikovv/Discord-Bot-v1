@@ -36,7 +36,7 @@ namespace DiscordBot.Discord
             _commandHandler = new CommandHandler(_client, _commandService, _services, _logger);
             await _commandHandler.InitializeAsync();
 
-            _loggingHandler = new LoggingHandler(_client);
+            _loggingHandler = new LoggingHandler(_client, _commandService);
             await _loggingHandler.Initialize();
 
             _reactionHandler = new ReactionHandler(_client);

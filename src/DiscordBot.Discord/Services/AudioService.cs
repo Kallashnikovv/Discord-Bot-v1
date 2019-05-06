@@ -63,7 +63,7 @@ namespace DiscordBot.Discord.Services
             }
 
             await player.PlayAsync(nextTrack);
-            await player.TextChannel.SendMessageAsync($"Now playing: `{nextTrack}`");
+            await player.TextChannel.SendMessageAsync($"Playing :notes: `{nextTrack}`");
         }
 
         private async Task LogAsync(LogMessage logMessage)
@@ -79,11 +79,13 @@ namespace DiscordBot.Discord.Services
             await _lavaSocketClient.ConnectAsync(_voiceChannel, textChannel);
         }
 
-        public async Task DisconnectAsync()
+        public async Task<string> DisconnectAsync()
         {
-            if (_voiceChannel is null) return;
+            if (_voiceChannel is null) return "Bot isn't connected to any channel!";
             await _lavaSocketClient.DisconnectAsync(_voiceChannel);
+            var name = _voiceChannel.Name;
             _voiceChannel = null;
+            return $"Disconnected from {name}!";
         }
 
         public async Task<string> PlayAsync(string query, ulong guildId, SocketVoiceChannel voiceChannel, ITextChannel textChannel)

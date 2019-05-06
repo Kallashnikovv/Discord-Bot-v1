@@ -9,6 +9,7 @@ namespace DiscordBot.Discord.CommandModules
     public class FunModule : ModuleBase<SocketCommandContext>
     {
         [Command("Jpg")]
+        [Summary("Sends random picture of Konon.")]
         private async Task SendRandImage()
         {
             string[] images = new String[]
@@ -31,6 +32,7 @@ namespace DiscordBot.Discord.CommandModules
         }
 
         [Command("Papaj")]
+        [Summary("Jan Pawel II")]
         public async Task Papaj()
         {
             var embed = new EmbedBuilder()
@@ -41,6 +43,7 @@ namespace DiscordBot.Discord.CommandModules
         }
 
         [Command("2137")]
+        [Summary("Time left to 21:37")]
         public async Task TimeLeft()
         {
             DateTime time = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 21, 37, 00);
@@ -71,22 +74,18 @@ namespace DiscordBot.Discord.CommandModules
         }
 
         [Command("Chlebek", true), Alias("chleb")]
-        [RequireBotPermission(GuildPermission.ViewChannel)]
-        [RequireBotPermission(GuildPermission.SendMessages)]
         private async Task SayChlebek()
         {
             await Context.Channel.SendMessageAsync("Chlebek Boży");
         }
 
         [Command("Kabab", true), Alias("kebab")]
-        [RequireBotPermission(GuildPermission.ViewChannel)]
-        [RequireBotPermission(GuildPermission.SendMessages)]
         private async Task SayKabab()
         {
             await Context.Channel.SendMessageAsync("Kabab Boży");
         }
 
-        [Command("8ball")]
+        //[Command("8ball")]
         public async Task YesNoGame([Remainder]string question)
         {
             string[] answers;

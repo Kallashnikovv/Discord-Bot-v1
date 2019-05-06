@@ -33,9 +33,7 @@ public class AudioModule : ModuleBase<SocketCommandContext>
     [Command("Leave"), Alias("l")]
     public async Task Leave()
     {
-        var user = Context.User as SocketGuildUser;
-        await _audioService.DisconnectAsync();
-        await ReplyAsync($"Disconnected from {user.VoiceChannel.Name}!");
+        await ReplyAsync(await _audioService.DisconnectAsync());
     }
 
     [Command("Play"), Alias("p")]

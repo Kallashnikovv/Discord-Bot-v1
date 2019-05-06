@@ -10,43 +10,43 @@ namespace DiscordBot.Discord.Handlers
     {
 
         private readonly DiscordSocketClient _client;
+        private readonly CommandService _commandService;
         protected internal StringBuilder LogMessage = new StringBuilder();
 
-        public LoggingHandler(DiscordSocketClient client)
+        public LoggingHandler(DiscordSocketClient client, CommandService commandService)
         {
             _client = client;
+            _commandService = commandService;
         }
 
         public Task Initialize()
         {
-            _client.MessageReceived += ClientCom_Log;
+            _commandService.CommandExecuted += ClientCom_Log;
+
             _client.MessageDeleted += MsgDelClient_Log;
             _client.MessageUpdated += MsgEdtClient_Log;
 
             return Task.CompletedTask;
         }
 
-        private async Task ClientCom_Log(SocketMessage msg)
+        private async Task ClientCom_Log(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             var guild = _client.GetGuild(561306978484355073); // server id here
             var channel = guild.GetTextChannel(564491145325969428); // channel id
-            int argPos = 0;
 
-            var message = msg as SocketUserMessage;
-            var server = msg.Channel as SocketGuildChannel;
+            if (context.User.IsBot || context.User.IsWebhook) { return; }
 
-            if (msg.Author.IsBot || !message.HasStringPrefix(Global.BotConfig.Prefix, ref argPos) || !message.HasMentionPrefix(_client.CurrentUser, ref argPos)) { return; }
 
             var embed = new EmbedBuilder()
                 .WithColor(255, 235, 25)
                 .WithThumbnailUrl("https://i.gyazo.com/d51b75c8148b4c194d96e222f404a32b.png")
                 .WithAuthor("Command executed")
-                .AddField($"{msg.Author}", $"User Id: {msg.Author.Id}")
-                .AddField($"Guild: {server.Guild.Name}", $"Id: {server.Guild.Id}")
-                .AddField($"Channel: #{msg.Channel.Name}", $"Id: {msg.Channel.Id}")
-                .AddField($"Message content:", msg.Content)
-                .WithFooter($"Message Id: {msg.Id}")
-                .WithTimestamp(msg.CreatedAt)
+                .AddField($"{context.User}", $"User Id: {context.User.Id}")
+                .AddField($"Guild: {context.Guild.Name}", $"Id: {context.Guild.Id}")
+                .AddField($"Channel: #{context.Channel.Name}", $"Id: {context.Channel.Id}")
+                .AddField($"Message content:", context.Message)
+                .WithFooter($"Message Id: {context.Message.Id}")
+                .WithTimestamp(context.Message.CreatedAt)
                 .Build();
 
             await channel.SendMessageAsync("", false, embed);
