@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using Victoria;
 using DiscordBot.Discord.CommandModules;
+using Discord.Addons.Interactive;
 
 namespace DiscordBot.Discord
 {
@@ -55,6 +56,7 @@ namespace DiscordBot.Discord
             .AddSingleton<LavaRestClient>()
             .AddSingleton<LavaSocketClient>()
             .AddSingleton<AudioService>()
+            .AddSingleton<InteractiveService>()
             .BuildServiceProvider();
     }
 }

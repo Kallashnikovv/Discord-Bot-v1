@@ -19,6 +19,7 @@ namespace DiscordBot.Discord.Services
         private readonly ILogger _logger;
         private LavaPlayer _player;
 
+        //Make per guild
         private IVoiceChannel _voiceChannel;
 
         private readonly TimeSpan hour = TimeSpan.Parse("01:00:00");
@@ -90,10 +91,15 @@ namespace DiscordBot.Discord.Services
 
         public async Task<string> PlayAsync(string query, ulong guildId, SocketVoiceChannel voiceChannel, ITextChannel textChannel)
         {
-            if(_voiceChannel is null)
+            try
             {
-                await ConnectAsync(voiceChannel, textChannel);
+            await ConnectAsync(voiceChannel, textChannel);
             }
+            catch
+            {
+                throw;
+            }
+
             _player = _lavaSocketClient.GetPlayer(guildId);
             var results = await _lavaRestClient.SearchYouTubeAsync(query);
 
@@ -133,19 +139,28 @@ namespace DiscordBot.Discord.Services
             return string.Join("\n", tracks);
         }
 
-        public async Task StopAsync()
+        public async Task<string> StopAsync()
         {
-            if(_player is null) return;
+            if(_player is null) return "";
 
             await _player.StopAsync();
+            return "";
         }
 
         public async Task<string> SkipAsync()
         {
-            if(_player is null || _player.Queue.Items.Count() is 0) return "Nothing in queue.";
+            if(_player is null) return "Nothing is playing.";
 
             var skipped = await _player.SkipAsync();
+
+            if (_player.Queue.Items.Count() is 0)
+            {
+                return $"Skipped: `{skipped.Title}`. Nothing in queue.";
+            }
+            else
+            {
             return $"Skipped: `{skipped.Title}` \nNow playing: `{_player.CurrentTrack.Title}`";
+            }
         }
 
         public async Task<string> SetVolumeAsync(int vol)

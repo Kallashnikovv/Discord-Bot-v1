@@ -53,7 +53,7 @@ public class AudioModule : ModuleBase<SocketCommandContext>
 
     [Command("Stop")]
     public async Task Stop()
-        => await _audioService.StopAsync();
+        => await ReplyAsync(await _audioService.StopAsync());
 
     [Command("Skip")]
     public async Task Skip()
