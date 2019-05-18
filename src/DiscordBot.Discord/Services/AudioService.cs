@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Victoria;
 using Victoria.Entities;
+using System.Collections.Generic;
 
 namespace DiscordBot.Discord.Services
 {
@@ -63,8 +64,32 @@ namespace DiscordBot.Discord.Services
                 return;
             }
 
+            var thumb = await track.FetchThumbnailAsync();
+            TimeSpan time = TimeSpan.Parse(track.Position.ToString());
+            var embed = new EmbedBuilder()
+                .WithColor(Color.DarkBlue)
+                .WithAuthor("Now playing ♪", "https://i.gyazo.com/05cf5976acd07ea1cd403bd307188337.gif")
+                .WithTitle(track.Title)
+                .WithUrl(track.Uri.AbsoluteUri)
+                .AddField("Channel", $"`{track.Author}`", true)
+                .WithThumbnailUrl(thumb);
+
+            if (track.Length >= hour)
+            {
+                embed.AddField("Length", $"`{time.ToString(@"hh\:mm\:ss")} / {track.Length.ToString(@"hh\:mm\:ss")}`", true);
+            }
+            else if (track.Length >= min)
+            {
+                embed.AddField("Length", $"`{time.ToString(@"mm\:ss")} / {track.Length.ToString(@"mm\:ss")}`", true);
+            }
+            else
+            {
+                embed.AddField("Length", $"`{time.ToString(@"m\:ss")} / {track.Length.ToString(@"m\:ss")}`", true);
+            }
+
             await player.PlayAsync(nextTrack);
-            await player.TextChannel.SendMessageAsync($"Playing :notes: `{nextTrack}`");
+            //await player.TextChannel.SendMessageAsync($"Playing :notes: `{nextTrack}`");
+            await player.TextChannel.SendMessageAsync(embed: embed.Build());
         }
 
         private async Task LogAsync(LogMessage logMessage)
@@ -89,7 +114,7 @@ namespace DiscordBot.Discord.Services
             return $"Disconnected from {name}!";
         }
 
-        public async Task<string> PlayAsync(string query, ulong guildId, SocketVoiceChannel voiceChannel, ITextChannel textChannel)
+        public async Task<Embed> PlayAsync(string query, ulong guildId, SocketVoiceChannel voiceChannel, ITextChannel textChannel)
         {
             try
             {
@@ -97,28 +122,59 @@ namespace DiscordBot.Discord.Services
             }
             catch
             {
-                throw;
+                
             }
 
             _player = _lavaSocketClient.GetPlayer(guildId);
             var results = await _lavaRestClient.SearchYouTubeAsync(query);
 
+            var error = new EmbedBuilder()
+                .WithAuthor("No matches found.")
+                .WithColor(Color.Blue)
+                .Build();
+
             if (results.LoadType == LoadType.NoMatches || results.LoadType == LoadType.LoadFailed)
             {
-                return "No matches found.";
+                return error;
             }
 
             var track = results.Tracks.FirstOrDefault();
 
+            var thumb = await track.FetchThumbnailAsync();
+            TimeSpan time = TimeSpan.Parse(track.Position.ToString());
+            var embed = new EmbedBuilder()
+                .WithColor(Color.DarkBlue)
+                .WithTitle(track.Title)
+                .WithUrl(track.Uri.AbsoluteUri)
+                .AddField("Channel", $"`{track.Author}`", true)
+                .WithThumbnailUrl(thumb);
+
+            if (track.Length >= hour)
+            {
+                embed.AddField("Length", $"`{time.ToString(@"hh\:mm\:ss")} / {track.Length.ToString(@"hh\:mm\:ss")}`", true);
+            }
+            else if (track.Length >= min)
+            {
+                embed.AddField("Length", $"`{time.ToString(@"mm\:ss")} / {track.Length.ToString(@"mm\:ss")}`", true);
+            }
+            else
+            {
+                embed.AddField("Length", $"`{time.ToString(@"m\:ss")} / {track.Length.ToString(@"m\:ss")}`", true);
+            }
+
             if (_player.IsPlaying)
             {
                 _player.Queue.Enqueue(track);
-                return $"`{track.Title}` has been added to the queue!";
+                //return $"`{track.Title}` has been added to the queue!";
+                embed.WithAuthor("Now playing ♪", "https://i.gyazo.com/05cf5976acd07ea1cd403bd307188337.gif");
+                return embed.Build();
             }
             else
             {
                 await _player.PlayAsync(track);
-                return $"**Playing**:notes: `{track.Title}`";
+                //return $"**Playing**:notes: `{track.Title}`";
+                embed.WithAuthor("Added to queue ♪", "https://i.gyazo.com/05cf5976acd07ea1cd403bd307188337.gif");
+                return embed.Build();
             }
         }
 
@@ -141,24 +197,35 @@ namespace DiscordBot.Discord.Services
 
         public async Task<string> StopAsync()
         {
-            if(_player is null) return "";
+            if(_player is null) return "Player isn't playing.";
 
+            try
+            {
+            var name = _player.CurrentTrack;
             await _player.StopAsync();
-            return "";
+            return $"Stopped playing {name}[{name.Uri.AbsoluteUri}] and cleared queue.";
+            }
+            catch
+            {
+                
+            }
+
+            return "Player isn't playing.";
         }
 
         public async Task<string> SkipAsync()
         {
             if(_player is null) return "Nothing is playing.";
 
-            var skipped = await _player.SkipAsync();
-
             if (_player.Queue.Items.Count() is 0)
             {
-                return $"Skipped: `{skipped.Title}`. Nothing in queue.";
+                var name = _player.CurrentTrack;
+                await _player.StopAsync();
+                return $"Skipped: `{name}`. Nothing in queue.";
             }
             else
             {
+            var skipped = await _player.SkipAsync();
             return $"Skipped: `{skipped.Title}` \nNow playing: `{_player.CurrentTrack.Title}`";
             }
         }
